@@ -1,0 +1,29 @@
+{
+    "name": "jhewarren/aibox",
+    "description": "A simple tool to facilitate the implementation of a standalone AI solution on a local machine.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AIBox\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AIBox\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/aibox"
+    ],
+    "config": {
+        "sort-packages": true,
+        "bin-dir": "bin"
+    }
+}
