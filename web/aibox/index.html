@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aibox — Local LLM Setup Wizard</title>
+  <meta name="description" content="Non-invasive wizard to assess your Windows PC for running a local AI (LLM) with Ollama and OpenWebUI." />
+  <link rel="stylesheet" href="assets/aibox.css" />
+</head>
+<body>
+
+<div id="aibox-wizard">
+<div class="aibox-container">
+
+  <!-- ── Header ──────────────────────────────────────────────── -->
+  <header class="aibox-header">
+    <h1>🤖 aibox — Local LLM Setup Wizard</h1>
+    <p class="subtitle">Assess your Windows PC for running a local AI with Ollama + OpenWebUI</p>
+    <p class="aibox-meta">
+      Version: <span id="aibox-version">unknown</span> &nbsp;|&nbsp;
+      <a href="https://github.com/jhewarren/aibox" target="_blank" rel="noopener noreferrer">View source on GitHub ↗</a>
+    </p>
+  </header>
+
+  <!-- ── Progress dots ───────────────────────────────────────── -->
+  <nav class="aibox-progress" aria-label="Wizard steps">
+    <div class="aibox-step-dot" id="dot-1">
+      <div class="dot">1</div>
+      <div class="label">Baseline</div>
+    </div>
+    <div class="aibox-step-connector"></div>
+    <div class="aibox-step-dot" id="dot-2">
+      <div class="dot">2</div>
+      <div class="label">Detect</div>
+    </div>
+    <div class="aibox-step-connector"></div>
+    <div class="aibox-step-dot" id="dot-3">
+      <div class="dot">3</div>
+      <div class="label">Confirm</div>
+    </div>
+    <div class="aibox-step-connector"></div>
+    <div class="aibox-step-dot" id="dot-4">
+      <div class="dot">4</div>
+      <div class="label">Impact</div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════════
+       Step 1 — Baseline spec (Level 00 / 00.1 / 00.2)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="step-1">
+
+    <div class="aibox-notice">
+      <span class="icon">🛡️</span>
+      <span>
+        <strong>Non-invasive &amp; read-only.</strong>
+        This wizard does not make any changes to your computer, does not install
+        software, and does not send your data to any server. All detection happens
+        entirely in your browser.
+      </span>
+    </div>
+
+    <div class="aibox-card">
+      <h2>What is aibox?</h2>
+      <p>
+        <strong>aibox</strong> helps you run a fully private, local AI assistant on your own Windows PC
+        using <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a> (Windows-native) and
+        <a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener">OpenWebUI</a>.
+        Your conversations never leave your machine.
+      </p>
+      <p>
+        This wizard will walk you through four quick steps:
+      </p>
+      <ol>
+        <li><strong>Baseline</strong> — the ideal target configuration (this page)</li>
+        <li><strong>Detect</strong> — best-effort browser detection of your current setup</li>
+        <li><strong>Confirm</strong> — you review and edit the detected values</li>
+        <li><strong>Impact</strong> — we explain how your setup compares to the baseline</li>
+      </ol>
+    </div>
+
+    <!-- Level 00.1 / 00.2 — Baseline spec -->
+    <div class="aibox-card">
+      <h2>🎯 Baseline Target Configuration (Level 00)</h2>
+      <p>
+        The following is the <strong>recommended baseline</strong> — the configuration this wizard was
+        designed around. Don't worry if you don't match it; the wizard will tell you what to expect.
+      </p>
+
+      <table class="baseline-table" aria-label="Baseline hardware specification">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Baseline Value</th>
+            <th>Why It Matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CPU</strong></td>
+            <td>Intel Core Ultra 7</td>
+            <td>Efficient cores for CPU inference fallback and background tasks</td>
+          </tr>
+          <tr>
+            <td><strong>System RAM</strong></td>
+            <td><span class="badge badge-blue">32 GB</span></td>
+            <td>Model weights, OS, and Docker need headroom — 32 GB is comfortable for 14B+ models</td>
+          </tr>
+          <tr>
+            <td><strong>GPU</strong></td>
+            <td>NVIDIA GeForce RTX 5060 Ti × 2</td>
+            <td>Dual GPU enables larger context windows and faster throughput via GPU offloading</td>
+          </tr>
+          <tr>
+            <td><strong>VRAM</strong></td>
+            <td><span class="badge badge-blue">16 GB</span> per card (32 GB total)</td>
+            <td>VRAM is the key constraint for GPU inference — larger VRAM = larger models run faster</td>
+          </tr>
+          <tr>
+            <td><strong>Storage</strong></td>
+            <td>NVMe SSD, <span class="badge badge-blue">100 GB</span> free</td>
+            <td>Model files are large (4–20 GB each); NVMe reduces load times</td>
+          </tr>
+          <tr>
+            <td><strong>NVIDIA Drivers</strong></td>
+            <td><span class="badge badge-green">Installed</span></td>
+            <td>Required for CUDA-accelerated inference in Ollama</td>
+          </tr>
+          <tr>
+            <td><strong>Ollama</strong></td>
+            <td><span class="badge badge-green">Windows-native</span></td>
+            <td>Native Windows install; no WSL2 required for Ollama itself</td>
+          </tr>
+          <tr>
+            <td><strong>Docker Desktop</strong></td>
+            <td><span class="badge badge-green">Installed</span></td>
+            <td>Used to run the OpenWebUI container (chat frontend)</td>
+          </tr>
+          <tr>
+            <td><strong>OpenWebUI</strong></td>
+            <td>Docker container on port 3000</td>
+            <td>Chat interface; connects to Ollama via <code>host.docker.internal:11434</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="aibox-card">
+      <h2>ℹ️ What this wizard does NOT do</h2>
+      <ul>
+        <li>Does not install any software</li>
+        <li>Does not modify any system settings</li>
+        <li>Does not collect or store your data anywhere — everything stays in your browser</li>
+        <li>Does not require login or registration</li>
+        <li>Does not communicate with any server during this assessment</li>
+      </ul>
+      <p style="margin-top: 0.75rem" class="text-sm text-muted">
+        Later stages (not implemented here) will provide optional PowerShell scripts you can
+        review before running. All changes will always be explicit and opt-in.
+      </p>
+    </div>
+
+    <div class="aibox-actions">
+      <button class="btn btn-primary" id="btn-start">
+        Start assessment →
+      </button>
+    </div>
+
+  </div><!-- /step-1 -->
+
+
+  <!-- ════════════════════════════════════════════════════════════
+       Step 2 — Browser detection (Level 0)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="step-2" class="hidden">
+
+    <div class="aibox-notice">
+      <span class="icon">🔍</span>
+      <span>
+        <strong>Browser-only detection.</strong> The values below were gathered using standard
+        browser APIs (<code>navigator.hardwareConcurrency</code>, <code>navigator.deviceMemory</code>,
+        user-agent, WebGL). They are <em>estimates only</em> and stay entirely in your browser.
+        You will be able to correct them in the next step.
+      </span>
+    </div>
+
+    <div class="aibox-card">
+      <h2>🖥️ Detected system information</h2>
+      <p>
+        These are the best-effort values your browser can report. Many are approximate or unavailable
+        depending on your browser and OS settings.
+      </p>
+
+      <div class="detect-grid">
+        <div class="detect-item">
+          <div class="key">Operating System</div>
+          <div class="val" id="det-os">…</div>
+        </div>
+        <div class="detect-item">
+          <div class="key">CPU threads</div>
+          <div class="val" id="det-threads">…</div>
+          <div class="note">logical cores via hardwareConcurrency</div>
+        </div>
+        <div class="detect-item">
+          <div class="key">Approximate RAM</div>
+          <div class="val" id="det-ram">…</div>
+          <div class="note">deviceMemory API — Chrome/Edge only, approximate</div>
+        </div>
+        <div class="detect-item">
+          <div class="key">GPU hint (WebGL)</div>
+          <div class="val" id="det-gpu">…</div>
+          <div class="note">⚠ Unreliable — may be masked or incorrect</div>
+        </div>
+      </div>
+
+      <h3>Raw user-agent string</h3>
+      <p class="text-sm text-muted" id="det-ua-short">…</p>
+
+      <p style="margin-top: 1rem" class="text-sm">
+        <strong>Important:</strong> Browsers cannot reliably detect VRAM, free disk space, installed
+        drivers, or Docker. You will enter those manually in the next step. The detected values above
+        will pre-fill the form as a starting point.
+      </p>
+    </div>
+
+    <div class="aibox-actions">
+      <button class="btn btn-secondary" id="btn-det-back">← Back</button>
+      <button class="btn btn-primary" id="btn-det-next">Confirm my hardware →</button>
+    </div>
+
+  </div><!-- /step-2 -->
+
+
+  <!-- ════════════════════════════════════════════════════════════
+       Step 3 — Manual confirmation form (Level 00.3)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="step-3" class="hidden">
+
+    <div class="aibox-notice">
+      <span class="icon">✏️</span>
+      <span>
+        <strong>Review and edit.</strong> The form below is pre-filled with browser-detected values
+        where available. Please correct or fill in any fields that look wrong.
+        Your entries are only used to generate the impact report on the next page.
+      </span>
+    </div>
+
+    <div class="aibox-card">
+      <h2>🔧 Confirm your hardware configuration</h2>
+
+      <div class="aibox-form">
+
+        <div class="form-group">
+          <label for="f-ram">System RAM (GB)</label>
+          <input type="number" id="f-ram" min="1" max="512" step="1" placeholder="e.g. 16" />
+          <span class="hint">Total installed system RAM (not VRAM)</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-disk">Free Disk Space (GB)</label>
+          <input type="number" id="f-disk" min="0" max="100000" step="1" placeholder="e.g. 120" />
+          <span class="hint">Free space on the drive where you'll store models</span>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="f-gpu">GPU Model</label>
+          <input type="text" id="f-gpu" placeholder="e.g. NVIDIA RTX 4070, AMD RX 7900 XT, or 'CPU only'" />
+          <span class="hint">Enter as much as you know (brand + model). Type "CPU only" if no dedicated GPU.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-vram">GPU VRAM (GB)</label>
+          <input type="number" id="f-vram" min="0" max="128" step="1" placeholder="e.g. 8" />
+          <span class="hint">Dedicated video memory. Leave blank if CPU only.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-driver">NVIDIA Drivers Installed?</label>
+          <select id="f-driver">
+            <option value="unknown">— Not sure —</option>
+            <option value="yes">Yes, installed</option>
+            <option value="no">No, not installed</option>
+          </select>
+          <span class="hint">Check Device Manager → Display Adapters</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-docker">Docker Desktop Installed?</label>
+          <select id="f-docker">
+            <option value="unknown">— Not sure —</option>
+            <option value="yes">Yes, installed</option>
+            <option value="no">No, not installed</option>
+          </select>
+          <span class="hint">docker.com/products/docker-desktop</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="aibox-actions">
+      <button class="btn btn-secondary" id="btn-form-back">← Back</button>
+      <button class="btn btn-primary" id="btn-form-next">See impact analysis →</button>
+    </div>
+
+  </div><!-- /step-3 -->
+
+
+  <!-- ════════════════════════════════════════════════════════════
+       Step 4 — Variance impact report (Level 00.4)
+  ═══════════════════════════════════════════════════════════════ -->
+  <div id="step-4" class="hidden">
+
+    <div class="aibox-card">
+      <h2>📊 Variance impact analysis</h2>
+      <p>
+        Here's how your confirmed configuration compares to the
+        <strong>baseline target</strong> and what to expect in practice.
+        These are <em>best-effort estimates</em> — actual performance varies by model, quantisation level,
+        and workload.
+      </p>
+
+      <!-- Tier banner -->
+      <div class="impact-summary">
+        <div class="impact-tier" id="impact-tier">
+          <span class="tier-icon">⏳</span>
+          <span class="tier-text">
+            <span class="tier-name">Calculating…</span>
+          </span>
+        </div>
+
+        <!-- Per-factor items -->
+        <div class="impact-items" id="impact-items"></div>
+
+        <!-- Model recommendations -->
+        <div class="model-rec" id="model-rec"></div>
+      </div>
+    </div>
+
+    <!-- Next steps (informational only) -->
+    <div class="aibox-card">
+      <h2>🗺️ What comes next?</h2>
+      <p>This wizard covers <strong>Level 00 (baseline spec)</strong> and <strong>Level 0 (browser detection)</strong>. Future stages will provide:</p>
+      <ul>
+        <li>
+          <strong>Level 1 — PowerShell audit script</strong><br>
+          <span class="text-sm text-muted">
+            A read-only <code>aibox-audit.ps1</code> you can run in PowerShell to collect exact
+            CPU, RAM, VRAM, disk, driver, and Docker info. Outputs <code>aibox-profile.json</code>.
+          </span>
+        </li>
+        <li style="margin-top: 0.5rem">
+          <strong>Level 2 — Optional config registration</strong><br>
+          <span class="text-sm text-muted">
+            Upload your <code>aibox-profile.json</code> to generate customised next-step scripts.
+            Local-only; no account required.
+          </span>
+        </li>
+        <li style="margin-top: 0.5rem">
+          <strong>Level 3 — Prerequisite scripts</strong><br>
+          <span class="text-sm text-muted">
+            Opt-in PowerShell scripts to install Docker Desktop, enable required features.
+          </span>
+        </li>
+        <li style="margin-top: 0.5rem">
+          <strong>Level 4 — Ollama + OpenWebUI install</strong><br>
+          <span class="text-sm text-muted">
+            One-command install: Windows-native Ollama, pull a baseline model,
+            and run OpenWebUI on <code>http://localhost:3000</code>.
+          </span>
+        </li>
+      </ul>
+
+      <p style="margin-top: 1rem" class="text-sm text-muted">
+        All future scripts will be viewable on
+        <a href="https://github.com/jhewarren/aibox" target="_blank" rel="noopener">GitHub</a>
+        before you run them. No hidden behaviour.
+      </p>
+    </div>
+
+    <div class="aibox-actions">
+      <button class="btn btn-secondary" id="btn-impact-back">← Edit my hardware</button>
+      <button class="btn btn-ghost"     id="btn-restart">↺ Start over</button>
+    </div>
+
+  </div><!-- /step-4 -->
+
+  <!-- ── Footer ──────────────────────────────────────────────── -->
+  <footer class="aibox-footer">
+    <p>
+      <a href="https://github.com/jhewarren/aibox" target="_blank" rel="noopener noreferrer">
+        jhewarren/aibox on GitHub
+      </a>
+      &nbsp;·&nbsp; No data is collected or transmitted by this page.
+      &nbsp;·&nbsp; Open source · MIT licence
+    </p>
+  </footer>
+
+</div><!-- /.aibox-container -->
+</div><!-- /#aibox-wizard -->
+
+<script src="assets/aibox.js"></script>
+</body>
+</html>
